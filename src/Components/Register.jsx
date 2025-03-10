@@ -4,12 +4,23 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaApple } from "react-icons/fa";
 import close from "../assets/login/fontisto_close.png";
 import Login from "./Login";
+import { userService } from "../services/userService";
+
 
 export default function Register({ onClose }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobileNumber: "",
+    password: "",
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Add this useEffect to disable body scrolling when modal is open
+  // Disable body scrolling when modal is open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -19,6 +30,41 @@ export default function Register({ onClose }) {
 
   const handleLoginClick = () => {
     setShowLogin(true);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const userData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        fullName: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        mobileNumber: formData.mobileNumber,
+        password: formData.password,
+      };
+
+      const response = await userService.register(userData);
+      console.log("Registration successful:", response);
+      // Handle successful registration (e.g., show success message, redirect, etc.)
+      // onClose(); // Close the modal on success
+      setShowLogin(true)
+    } catch (err) {
+      setError(err.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,16 +87,26 @@ export default function Register({ onClose }) {
               </h1>
             </div>
 
-            <form>
-              <div className="flex gap-4 ">
+            {error && (
+              <div className="text-red-500 text-sm text-center mb-4">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit}>
+              <div className="flex gap-4">
                 <div className="w-1/2">
                   <label className="block font-['Orbitron'] font-bold lg:text-sm mb-2">
                     First Name
                   </label>
                   <input
                     type="text"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     placeholder="Enter first name"
                     className="w-full p-2 bg-gray-100 rounded-md outline-none text-gray-500"
+                    required
                   />
                 </div>
                 <div className="w-1/2">
@@ -59,8 +115,12 @@ export default function Register({ onClose }) {
                   </label>
                   <input
                     type="text"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     placeholder="Enter last name"
                     className="w-full p-2 bg-gray-100 rounded-md outline-none text-gray-500"
+                    required
                   />
                 </div>
               </div>
@@ -71,8 +131,12 @@ export default function Register({ onClose }) {
                 </label>
                 <input
                   type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   placeholder="Enter email address"
                   className="w-full p-2 bg-gray-100 rounded-md outline-none text-gray-500"
+                  required
                 />
               </div>
 
@@ -86,8 +150,12 @@ export default function Register({ onClose }) {
                   </div>
                   <input
                     type="tel"
+                    name="mobileNumber"
+                    value={formData.mobileNumber}
+                    onChange={handleInputChange}
                     placeholder="Enter phone number"
                     className="w-full p-2 bg-gray-100 rounded-r-md outline-none text-gray-500"
+                    required
                   />
                 </div>
               </div>
@@ -99,8 +167,12 @@ export default function Register({ onClose }) {
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
                     placeholder="Enter your password"
                     className="w-full p-2 bg-gray-100 rounded-md outline-none text-gray-500 pr-10"
+                    required
                   />
                   <button
                     type="button"
@@ -113,15 +185,17 @@ export default function Register({ onClose }) {
               </div>
 
               <button
-                type="button"
-                onClick={handleLoginClick}
-                className="w-full py-2 bg-gray-400 text-white rounded-full font-['Orbitron'] font-bold "
+                type="submit"
+                disabled={loading}
+                className={`w-full py-2 bg-gray-400 text-white rounded-full font-['Orbitron'] font-bold ${
+                  loading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
                 style={{ borderRadius: "9999px" }}
               >
-                Sign up
+                {loading ? "Signing up..." : "Sign up"}
               </button>
 
-              <div className="flex items-center gap-3 ">
+              <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-gray-300"></div>
                 <p className="text-gray-400 text-sm whitespace-nowrap">
                   or continue with
@@ -153,7 +227,7 @@ export default function Register({ onClose }) {
                 </button>
               </div>
 
-              <p className="text-gray-500 text-xs lg:text-sm text-center ">
+              <p className="text-gray-500 text-xs lg:text-sm text-center">
                 By continuing, you agree to SoundSparkHub's{" "}
                 <a href="#" className="text-black font-bold">
                   Terms & conditions
@@ -166,8 +240,8 @@ export default function Register({ onClose }) {
 
               <p className="text-gray-400 text-sm text-center">
                 Already have an account?{" "}
-                <a 
-                  href="#" 
+                <a
+                  href="#"
                   className="text-black font-bold"
                   onClick={(e) => {
                     e.preventDefault();

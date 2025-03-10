@@ -7,12 +7,22 @@ import { FcGoogle } from "react-icons/fc";
 import ForgotPassword from "./ForgotPassword";
 import Register from "./Register";
 import SuccessModal from "./SuccessModal";
+import { userService } from "../services/userService";
+import { useAppDispatch, useAppSelector } from "../redux/hooks"; // Import Redux hooks
+import { setUser, setLoading } from "../redux/slices/authSlice"; // Import Redux actions
 
-export default function Login({ onClose }) {
+export default function Login({ onClose, onLoginSuccess }) {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useAppDispatch(); // Get dispatch function from Redux
+  const reduxIsLoading = useAppSelector((state) => state.auth.isLoading); // Get loading state from Redux
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -21,14 +31,34 @@ export default function Login({ onClose }) {
     };
   }, []);
 
-  // Handler for Sign up link click
   const handleSignUpClick = () => {
     setShowRegister(true);
   };
 
-  // Handler for Login button click
-  const handleLoginClick = () => {
-    setShowSuccess(true);
+  const handleLoginClick = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    dispatch(setLoading(true)); // Set loading state in Redux
+    setError("");
+
+    try {
+      const response = await userService.login(email, password);
+      // Dispatch user data to Redux store
+      dispatch(setUser({
+        user: response.data,
+        accessToken: response.accessToken,
+      }));
+      setShowSuccess(true);
+      console.log("Login successful:", response);
+      if (onLoginSuccess) {
+        onLoginSuccess(); // Call the success callback to update Navbar
+      }
+    } catch (err) {
+      setError(err.message || "Login failed. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
+      dispatch(setLoading(false)); // Clear loading state in Redux
+    }
   };
 
   return (
@@ -51,10 +81,10 @@ export default function Login({ onClose }) {
 
             <div className="container mx-auto">
               <div className="w-full">
-                <form className="px-2 py-1">
+                <form className="px-2 py-1" onSubmit={handleLoginClick}>
                   <div className="flex justify-center items-center">
-                    <h1 className="font-['Orbitron'] font-bold text-2xl ">
-                      <p className="text-2xl font-bold ">Welcome Back to</p>
+                    <h1 className="font-['Orbitron'] font-bold text-2xl">
+                      <p className="text-2xl font-bold">Welcome Back to</p>
                     </h1>
                   </div>
 
@@ -68,7 +98,7 @@ export default function Login({ onClose }) {
                         style={{
                           animation: "rotate 8s linear infinite",
                         }}
-                      />{" "}
+                      />
                     </div>
                   </div>
 
@@ -80,6 +110,9 @@ export default function Login({ onClose }) {
                       type="email"
                       placeholder="Email"
                       className="w-full p-2 bg-[#EDEDED] rounded outline-none"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
                     />
                   </div>
 
@@ -92,6 +125,9 @@ export default function Login({ onClose }) {
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
                         className="w-full p-2 bg-[#EDEDED] rounded outline-none pr-10"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                       />
                       <span
                         className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-gray-500 text-lg"
@@ -102,7 +138,13 @@ export default function Login({ onClose }) {
                     </div>
                   </div>
 
-                  <div className="flex justify-center items-center ">
+                  {error && (
+                    <div className="mb-2 text-red-500 text-sm text-center">
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="flex justify-center items-center">
                     <a
                       className="cursor-pointer"
                       onClick={() => setShowForgotPassword(true)}
@@ -113,14 +155,14 @@ export default function Login({ onClose }) {
                     </a>
                   </div>
 
-                  <div className="mb-3 ">
+                  <div className="mb-3">
                     <button
-                      className="w-full py-2 bg-gray-400 text-white rounded-full"
-                      type="button"
+                      className="w-full py-2 bg-gray-400 text-white rounded-full disabled:opacity-50"
+                      type="submit"
                       style={{ borderRadius: "9999px" }}
-                      onClick={handleLoginClick}
+                      disabled={isLoading || reduxIsLoading} // Use Redux loading state too
                     >
-                      Login
+                      {isLoading || reduxIsLoading ? "Logging in..." : "Login"}
                     </button>
                   </div>
 
@@ -157,7 +199,7 @@ export default function Login({ onClose }) {
                   </div>
 
                   <div className="flex justify-center items-center mb-2">
-                    <p className="text-gray-500 text-xs lg:text-sm text-center ">
+                    <p className="text-gray-500 text-xs lg:text-sm text-center">
                       By continuing, you agree to SoundSparkHub's{" "}
                       <a href="#" className="text-black font-bold">
                         Terms & conditions

@@ -27,6 +27,8 @@ import Help from "./Pages/Help";
 import Right from "./Pages/Right";
 import More from "./Pages/More";
 import Vision from "./Pages/Vision";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -44,7 +46,7 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <>
+    <Provider store={store}>
       <Router>
         <ScrollToTop />
         <Layout>
@@ -76,7 +78,7 @@ function App() {
           </Routes>
         </Layout>
       </Router>
-    </>
+    </Provider>
   );
 }
 

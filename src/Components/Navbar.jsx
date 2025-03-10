@@ -1,4 +1,5 @@
-import { useState } from "react";
+// src/components/Navbar.js
+import { useEffect , useState} from "react";
 import logo1 from "../assets/Navbar/logo1.png";
 import logo2 from "../assets/Navbar/logo2.png";
 import userSvg from "../assets/Navbar/SVG.png";
@@ -7,11 +8,23 @@ import Register from "./Register";
 import video from "../assets/home/header_video.mp4";
 import ServicesDropdown from "./ServicesDropdown";
 import "../styles/navbar.css";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { setUser, clearUser } from "../redux/slices/authSlice";
+import { userService } from "../services/userService";
 
 export default function Navbar() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    const userData = userService.getUserData();
+    if (userData) {
+      dispatch(setUser({ user: userData.user, accessToken: userData.accessToken }));
+    }
+  }, [dispatch]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -21,25 +34,38 @@ export default function Navbar() {
     e.preventDefault();
     setShowLogin(true);
     setShowRegister(false);
-    setMobileMenuOpen(false); // Close mobile menu
+    setMobileMenuOpen(false);
   };
 
   const handleRegisterClick = (e) => {
     e.preventDefault();
     setShowRegister(true);
     setShowLogin(false);
-    setMobileMenuOpen(false); // Close mobile menu
+    setMobileMenuOpen(false);
   };
 
-  // Create a closeMobileMenu function to pass to the ServicesDropdown component
   const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
+  const handleLoginSuccess = () => {
+    const userData = userService.getUserData();
+    if (userData) {
+      dispatch(setUser({ user: userData.user, accessToken: userData.accessToken }));
+    }
+    setShowLogin(false);
+  };
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+    userService.logout();
+    dispatch(clearUser());
     setMobileMenuOpen(false);
   };
 
   return (
     <>
       <nav className="bg-black/80 backdrop-blur-sm sticky top-0 z-[9000]">
-        {/* Video Background */}
         <video
           autoPlay
           loop
@@ -51,7 +77,6 @@ export default function Navbar() {
 
         <div className="container mx-auto py-2 px-2 relative">
           <div className="flex items-center justify-between">
-            {/* Logo Section */}
             <a className="flex items-center" href="#">
               <div className="flex items-center lg:gap-6">
                 <div>
@@ -67,7 +92,6 @@ export default function Navbar() {
               </div>
             </a>
 
-            {/* Mobile Menu Button */}
             <button
               className="lg:hidden p-2 text-white"
               type="button"
@@ -93,7 +117,6 @@ export default function Navbar() {
               </div>
             </button>
 
-            {/* Desktop Navigation Items */}
             <div className="hidden lg:block" id="navbarSupportedContent">
               <ul className="nav-menu flex items-center gap-8">
                 <li>
@@ -125,39 +148,58 @@ export default function Navbar() {
                   </a>
                 </li>
 
-                {/* Login Section */}
                 <li className="flex items-center ml-4">
                   <div className="login-button">
-                    <a
-                      className="login-link"
-                      href="#"
-                      onClick={handleLoginClick}
-                    >
-                      <img
-                        src={userSvg}
-                        className="w-5 h-5 mr-2"
-                        alt="User Icon"
-                      />
-                      Log In
-                    </a>
+                    {user ? (
+                      <div className="flex items-center">
+                        <a className="login-link" href="#">
+                          <img
+                            src={userSvg}
+                            className="w-5 h-5 mr-2"
+                            alt="User Icon"
+                          />
+                          {user.firstName}
+                        </a>
+                        <a
+                          className="ml-4 text-white hover:text-gray-300"
+                          href="#"
+                          onClick={handleLogout}
+                        >
+                          Logout
+                        </a>
+                      </div>
+                    ) : (
+                      <a
+                        className="login-link"
+                        href="#"
+                        onClick={handleLoginClick}
+                      >
+                        <img
+                          src={userSvg}
+                          className="w-5 h-5 mr-2"
+                          alt="User Icon"
+                        />
+                        Log In
+                      </a>
+                    )}
                   </div>
                 </li>
 
-                {/* Get Started Button */}
-                <li>
-                  <a
-                    className="get-started-button"
-                    href="#"
-                    onClick={handleRegisterClick}
-                  >
-                    Get Started
-                  </a>
-                </li>
+                {!user && (
+                  <li>
+                    <a
+                      className="get-started-button"
+                      href="#"
+                      onClick={handleRegisterClick}
+                    >
+                      Get Started
+                    </a>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
 
-          {/* Mobile Menu */}
           <div
             className={`lg:hidden mobile-menu overflow-hidden transition-all duration-300 ${
               mobileMenuOpen
@@ -172,11 +214,8 @@ export default function Navbar() {
                 </a>
               </li>
               <li className="w-full">
-                <div className="mobile-services-dropdown ">
-                  <a
-                    className="nav-link flex items-center justify-between w-full"
-                    href="#"
-                  >
+                <div className="mobile-services-dropdown">
+                  <a className="nav-link flex items-center justify-between w-full" href="#">
                     <ServicesDropdown onItemClick={closeMobileMenu} />
                   </a>
                 </div>
@@ -194,7 +233,7 @@ export default function Navbar() {
               <li>
                 <a className="nav-link" href="/vision">
                   Vision
-                  </a>
+                </a>
               </li>
               <li>
                 <a className="nav-link" href="/more">
@@ -202,28 +241,49 @@ export default function Navbar() {
                 </a>
               </li>
 
-              {/* Mobile Login & Register Buttons */}
               <li className="flex w-full gap-0 mt-1">
                 <div className="login-button w-full mr-0">
-                  <a
-                    className="login-link"
-                    href="#"
-                    onClick={handleLoginClick}
-                  >
-                    <img
-                      src={userSvg}
-                      className="w-5 h-5 mr-2"
-                      alt="User Icon"
-                    />
-                    Log In
-                  </a>
-                  <a
-                    className="get-started-button ml-4"
-                    href="#"
-                    onClick={handleRegisterClick}
-                  >
-                    Get Started
-                  </a>
+                  {user ? (
+                    <div className="flex flex-col">
+                      <a className="login-link" href="#">
+                        <img
+                          src={userSvg}
+                          className="w-5 h-5 mr-2"
+                          alt="User Icon"
+                        />
+                        {user.firstName}
+                      </a>
+                      <a
+                        className="nav-link mt-2"
+                        href="#"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </a>
+                    </div>
+                  ) : (
+                    <>
+                      <a
+                        className="login-link"
+                        href="#"
+                        onClick={handleLoginClick}
+                      >
+                        <img
+                          src={userSvg}
+                          className="w-5 h-5 mr-2"
+                          alt="User Icon"
+                        />
+                        Log In
+                      </a>
+                      <a
+                        className="get-started-button ml-4"
+                        href="#"
+                        onClick={handleRegisterClick}
+                      >
+                        Get Started
+                      </a>
+                    </>
+                  )}
                 </div>
               </li>
             </ul>
@@ -231,8 +291,12 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Modals */}
-      {showLogin && <Login onClose={() => setShowLogin(false)} />}
+      {showLogin && (
+        <Login
+          onClose={() => setShowLogin(false)}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
       {showRegister && <Register onClose={() => setShowRegister(false)} />}
     </>
   );
