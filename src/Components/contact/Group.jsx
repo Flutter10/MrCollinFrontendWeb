@@ -6,13 +6,20 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 import backgroundImage from "../../assets/contact/Group.png";
+import { contactUsService } from "../../services/contactUsService";
+import SuccessModal from "../SuccessModal";
 
 const Group = () => {
   const [formData, setFormData] = useState({
     name: "",
-    looking: "",
+    email: "",
+    phone: "",
+    lookingFor: "",
     message: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,10 +29,27 @@ const Group = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Add your form submission logic here
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await contactUsService.createInquiry(formData);
+      setShowSuccess(true);
+      // Reset form after successful submission
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        lookingFor: "",
+        message: "",
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -38,7 +62,6 @@ const Group = () => {
           backgroundPosition: "center",
         }}
       >
-        {/* Container for the form and contact info */}
         <div className="container mx-auto px-4 h py-8 md:py-16 relative z-10">
           <div className="flex flex-col md:flex-row rounded-3xl overflow-hidden">
             {/* Left Section - Form */}
@@ -53,10 +76,7 @@ const Group = () => {
 
                 <form onSubmit={handleSubmit}>
                   <div className="mb-6">
-                    <label
-                      htmlFor="name"
-                      className="block text-sm text-[#252F40] mb-2 font-['Orbitron']"
-                    >
+                    <label htmlFor="name" className="block text-sm text-[#252F40] mb-2 font-['Orbitron']">
                       My name
                     </label>
                     <input
@@ -67,32 +87,60 @@ const Group = () => {
                       value={formData.name}
                       onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded-md text-[#495057] font-normal focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      disabled={isLoading}
                     />
                   </div>
 
                   <div className="mb-6">
-                    <label
-                      htmlFor="looking"
-                      className="block text-sm text-[#252F40] mb-2 font-['Orbitron']"
-                    >
-                      I'm looking
+                    <label htmlFor="email" className="block text-sm text-[#252F40] mb-2 font-['Orbitron']">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      placeholder="Your Email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full p-3 border border-gray-300 rounded-md text-[#495057] font-normal focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  <div className="mb-6">
+                    <label htmlFor="phone" className="block text-sm text-[#252F40] mb-2 font-['Orbitron']">
+                      Phone
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      placeholder="Your Phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full p-3 border border-gray-300 rounded-md text-[#495057] font-normal focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      disabled={isLoading}
+                    />
+                  </div>
+
+                  <div className="mb-6">
+                    <label htmlFor="lookingFor" className="block text-sm text-[#252F40] mb-2 font-['Orbitron']">
+                      I'm looking for
                     </label>
                     <input
                       type="text"
-                      id="looking"
-                      name="looking"
-                      placeholder="What you love"
-                      value={formData.looking}
+                      id="lookingFor"
+                      name="lookingFor"
+                      placeholder="What you need"
+                      value={formData.lookingFor}
                       onChange={handleChange}
-                      className="w-full p-3 border border-gray-300 text-xl text-[#495057] font-normal rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      className="w-full p-3 border border-gray-300 rounded-md text-[#495057] font-normal focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      disabled={isLoading}
                     />
                   </div>
 
                   <div className="mb-6">
-                    <label
-                      htmlFor="message"
-                      className="block text-sm text-[#252F40] mb-2 font-['Orbitron']"
-                    >
+                    <label htmlFor="message" className="block text-sm text-[#252F40] mb-2 font-['Orbitron']">
                       Your message
                     </label>
                     <textarea
@@ -103,16 +151,24 @@ const Group = () => {
                       onChange={handleChange}
                       rows="6"
                       className="w-full p-3 border border-gray-300 rounded-md text-[#495057] font-normal focus:outline-none focus:ring-2 focus:ring-gray-400"
+                      disabled={isLoading}
                     />
                   </div>
 
-                  <div className="flex justify-end ">
+                  {error && (
+                    <div className="mb-6 text-red-500 text-sm font-['Orbitron']">
+                      {error}
+                    </div>
+                  )}
+
+                  <div className="flex justify-end">
                     <button
                       type="submit"
-                      className="bg-gray-800 text-white py-2 px-10 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 font-['Orbitron'] text-sm"
+                      className="bg-gray-800 text-white py-2 px-10 rounded-full hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 font-['Orbitron'] text-sm disabled:opacity-50"
                       style={{ borderRadius: "999px" }}
+                      disabled={isLoading}
                     >
-                      <p className="mb-0 mt-0">SEND</p>
+                      <p className="mb-0 mt-0">{isLoading ? 'SENDING...' : 'SEND'}</p>
                       <p className="mt-0 mb-0">MESSAGE</p>
                     </button>
                   </div>
@@ -127,8 +183,7 @@ const Group = () => {
                   Contact Information
                 </h2>
                 <p className="mb-1 md:mb-8 text-white font-normal font-['Orbitron'] text-sm md:text-base">
-                  Fill up the form and our Team will get back to you within 24
-                  hours.
+                  Fill up the form and our Team will get back to you within 24 hours.
                 </p>
 
                 <div className="space-y-4 mb-1 md:mb-12 md:ml-4">
@@ -144,28 +199,16 @@ const Group = () => {
                 </div>
 
                 <div className="flex space-x-4 md:space-x-6">
-                  <a
-                    href="#"
-                    className="text-white hover:text-gray-300 transition-colors"
-                  >
+                  <a href="#" className="text-white hover:text-gray-300 transition-colors">
                     <FaFacebookF size={16} className="md:text-xl" />
                   </a>
-                  <a
-                    href="#"
-                    className="text-white hover:text-gray-300 transition-colors"
-                  >
+                  <a href="#" className="text-white hover:text-gray-300 transition-colors">
                     <FaTwitter size={16} className="md:text-xl" />
                   </a>
-                  <a
-                    href="#"
-                    className="text-white hover:text-gray-300 transition-colors"
-                  >
+                  <a href="#" className="text-white hover:text-gray-300 transition-colors">
                     <FaDribbble size={16} className="md:text-xl" />
                   </a>
-                  <a
-                    href="#"
-                    className="text-white hover:text-gray-300 transition-colors"
-                  >
+                  <a href="#" className="text-white hover:text-gray-300 transition-colors">
                     <FaInstagram size={16} className="md:text-xl" />
                   </a>
                 </div>
@@ -174,6 +217,13 @@ const Group = () => {
           </div>
         </div>
       </div>
+
+      {showSuccess && (
+        <SuccessModal
+          onClose={() => setShowSuccess(false)}
+          title="Message Sent Successfully!"
+        />
+      )}
     </div>
   );
 };

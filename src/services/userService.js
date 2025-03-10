@@ -1,3 +1,4 @@
+// src/services/userService.js
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 async function login(email, password) {
@@ -6,7 +7,7 @@ async function login(email, password) {
       throw new Error('Email and password are required');
     }
 
-    const response = await fetch(`${BASE_URL}/signin`, {
+    const response = await fetch(`${BASE_URL}/user/signin`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,16 +21,15 @@ async function login(email, password) {
       throw new Error(data.message || 'Login failed');
     }
 
-    if (data.accessToken) {
-      const userData = {
-        user: data.data,
-        accessToken: data.accessToken,
-      };
-      localStorage.setItem('userData', JSON.stringify(userData));
-      localStorage.setItem('userToken', data.accessToken);
-    }
+    // Store user data in localStorage with the correct structure
+    const userData = {
+      user: data.data,
+      accessToken: data.accessToken
+    };
+    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem('userToken', data.accessToken);
 
-    return data;
+    return userData; // Return the properly structured user data
   } catch (error) {
     throw error instanceof Error ? error : new Error('An unexpected error occurred during login');
   }
@@ -41,7 +41,7 @@ async function register(userData) {
       throw new Error('Email and password are required for registration');
     }
 
-    const response = await fetch(`${BASE_URL}/registration`, {
+    const response = await fetch(`${BASE_URL}/user/registration`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

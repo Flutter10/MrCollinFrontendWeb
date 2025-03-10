@@ -8,8 +8,8 @@ import ForgotPassword from "./ForgotPassword";
 import Register from "./Register";
 import SuccessModal from "./SuccessModal";
 import { userService } from "../services/userService";
-import { useAppDispatch, useAppSelector } from "../redux/hooks"; // Import Redux hooks
-import { setUser, setLoading } from "../redux/slices/authSlice"; // Import Redux actions
+import { useAppDispatch } from "../redux/hooks";
+import { setUser } from "../redux/slices/authSlice";
 
 export default function Login({ onClose, onLoginSuccess }) {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -20,9 +20,8 @@ export default function Login({ onClose, onLoginSuccess }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  const dispatch = useAppDispatch(); // Get dispatch function from Redux
-  const reduxIsLoading = useAppSelector((state) => state.auth.isLoading); // Get loading state from Redux
+  
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -38,26 +37,22 @@ export default function Login({ onClose, onLoginSuccess }) {
   const handleLoginClick = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    dispatch(setLoading(true)); // Set loading state in Redux
     setError("");
 
     try {
-      const response = await userService.login(email, password);
-      // Dispatch user data to Redux store
+      const userData = await userService.login(email, password);
       dispatch(setUser({
-        user: response.data,
-        accessToken: response.accessToken,
+        user: userData.user,
+        accessToken: userData.accessToken
       }));
       setShowSuccess(true);
-      console.log("Login successful:", response);
       if (onLoginSuccess) {
-        onLoginSuccess(); // Call the success callback to update Navbar
+        onLoginSuccess();
       }
     } catch (err) {
       setError(err.message || "Login failed. Please check your credentials.");
     } finally {
       setIsLoading(false);
-      dispatch(setLoading(false)); // Clear loading state in Redux
     }
   };
 
@@ -83,8 +78,8 @@ export default function Login({ onClose, onLoginSuccess }) {
               <div className="w-full">
                 <form className="px-2 py-1" onSubmit={handleLoginClick}>
                   <div className="flex justify-center items-center">
-                    <h1 className="font-['Orbitron'] font-bold text-2xl">
-                      <p className="text-2xl font-bold">Welcome Back to</p>
+                    <h1 className="font-['Orbitron'] font-bold text-2xl ">
+                      <p className="text-2xl font-bold ">Welcome Back to</p>
                     </h1>
                   </div>
 
@@ -144,7 +139,7 @@ export default function Login({ onClose, onLoginSuccess }) {
                     </div>
                   )}
 
-                  <div className="flex justify-center items-center">
+                  <div className="flex justify-center items-center ">
                     <a
                       className="cursor-pointer"
                       onClick={() => setShowForgotPassword(true)}
@@ -155,14 +150,14 @@ export default function Login({ onClose, onLoginSuccess }) {
                     </a>
                   </div>
 
-                  <div className="mb-3">
+                  <div className="mb-3 ">
                     <button
                       className="w-full py-2 bg-gray-400 text-white rounded-full disabled:opacity-50"
                       type="submit"
                       style={{ borderRadius: "9999px" }}
-                      disabled={isLoading || reduxIsLoading} // Use Redux loading state too
+                      disabled={isLoading}
                     >
-                      {isLoading || reduxIsLoading ? "Logging in..." : "Login"}
+                      {isLoading ? "Logging in..." : "Login"}
                     </button>
                   </div>
 
@@ -199,7 +194,7 @@ export default function Login({ onClose, onLoginSuccess }) {
                   </div>
 
                   <div className="flex justify-center items-center mb-2">
-                    <p className="text-gray-500 text-xs lg:text-sm text-center">
+                    <p className="text-gray-500 text-xs lg:text-sm text-center ">
                       By continuing, you agree to SoundSparkHub's{" "}
                       <a href="#" className="text-black font-bold">
                         Terms & conditions

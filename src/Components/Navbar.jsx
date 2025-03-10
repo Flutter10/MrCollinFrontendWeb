@@ -19,8 +19,11 @@ export default function Navbar() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
 
+  console.log("User:", user);
+
   useEffect(() => {
     const userData = userService.getUserData();
+
     if (userData) {
       dispatch(setUser({ user: userData.user, accessToken: userData.accessToken }));
     }
