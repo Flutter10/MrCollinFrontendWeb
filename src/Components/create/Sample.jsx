@@ -7,7 +7,7 @@ import i3 from "../../assets/create/i3.png";
 import i4 from "../../assets/create/i4.png";
 import i5 from "../../assets/create/i5.png";
 
-function Sample() {
+function Sample({ data }) {
   const sectionRef = useRef(null);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -41,6 +41,15 @@ function Sample() {
       }
     };
   }, []);
+
+  // Fallback data in case props.data is undefined
+  const defaultData = {
+    title: "Create Now",
+    desc: "Featuring samples from world–class labels:",
+    data: [],
+  };
+
+  const sectionData = data || defaultData;
 
   return (
     <>
@@ -121,7 +130,7 @@ function Sample() {
       >
         {" "}
         <img
-          src={bgimage}
+          src={sectionData.image || bgimage}
           alt="background"
           className="w-full h-full object-cover absolute inset-0"
         />
@@ -145,12 +154,12 @@ function Sample() {
 
           <div className="mt-4">
             <p className="text-white font-['Orbitron'] text-lg mb-4 ">
-              Featuring samples from world-class labels:
+              {sectionData.desc}
             </p>
             <div className="flex gap-2 lg:flex-nowrap ">
-              {[i1, i2, i3, i4, i5].map((img, index) => (
-                <div key={index} className="">
-                  <img src={img} alt={`Label ${index + 1}`} />
+              {sectionData.data.map((img, index) => (
+                <div key={index} className="bg-[#3D3B3B] rounded-lg flex items-center justify-center">
+                  <img src={img.image} alt={`Label ${index + 1}`} />
                 </div>
               ))}
             </div>

@@ -1,9 +1,10 @@
 import React from "react";
 import craft from "../../assets/music/bg.png";
-import group from "../../assets/music/Group.png";
 import arrow from "../../assets/create/arrow.png";
 
-function Comes() {
+function Comes({ data }) {
+  console.log("data is", data);
+
   return (
     <>
       <style>
@@ -76,19 +77,29 @@ function Comes() {
           <div className="space-y-4 ">
             <h1 className="text-white font-['Orbitron'] text-6xl ">
               <p className="lg:text-6xl text-4xl">
-                Comes with your
-                <br />
-                Membership Plan
+                {data.title}
               </p>
             </h1>
 
             <p className="text-white lg:text-sm text-xs font-['Orbitron'] ">
-              At Studiosphere 360, we offer three membership plans designed to
-              empower artists, producers, writers, and managers at every point
-              in their career. Whether you're just starting out or you're ready
-              to level up, we have a plan that fits your needs.{" "}
+              {data.desc}
             </p>
-            <img src={group} alt="arrow" className=" " />
+
+            {/* Button Tags based on data.data */}
+            <div className="flex flex-wrap gap-2">
+              {data.data.map((item, index) => (
+                <button
+                  key={item._id}
+                  className="border border-white !rounded-full px-4 py-2 text-white"
+                  style={{
+                    backgroundColor: "transparent", // Dark background for "Video Creation" + "More"
+                    display: index === 4 ? "flex" : "block", // Flex for the last item to align "Video Creation" and "+ More"
+                  }}
+                >
+              {     <span>{item.title}</span>}
+                </button>
+              ))}
+            </div>
 
             {/* Try Now Button */}
             <div className="pt-0">

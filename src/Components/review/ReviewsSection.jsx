@@ -5,14 +5,15 @@ import bgimage2 from "../../assets/review/girl2.png";
 import bgimage3 from "../../assets/review/girl3.png";
 import bgimage4 from "../../assets/review/girl4.png";
 
-const ReviewCard = ({ userId, name, review, score, image }) => {
+// ReviewCard Component (unchanged)
+const ReviewCard = ({ userName, name, review, score, image }) => {
   return (
     <div className="bg-white rounded-3xl px-4 md:px-6 mb-4">
       <div className="flex flex-col md:flex-row justify-between items-start">
         <div className="flex flex-col md:flex-row gap-4 w-full">
           <div className="relative lg:w-[15%] w-full rounded-xl flex flex-col md:flex-row items-center justify-center">
             <div className="absolute top-0 left-0 bg-gray-900 w-full text-white text-center text-xs py-1 px-2 rounded-tl-lg rounded-br-lg">
-              User ID: #{userId}
+              User Name: {userName}
             </div>
             <div className="pt-8 lg:pb-4 px-2 w-full flex justify-center">
               <img
@@ -24,7 +25,7 @@ const ReviewCard = ({ userId, name, review, score, image }) => {
           </div>
           <div className="flex-1 w-full md:w-[88%] py-4 md:py-6 text-center md:text-left">
             <div
-              className="font-['Orbitron']  text-xl mb-2"
+              className="font-['Orbitron'] text-xl mb-2"
               style={{ textAlign: "center" }}
             >
               <style jsx>{`
@@ -98,47 +99,23 @@ const ReviewCard = ({ userId, name, review, score, image }) => {
   );
 };
 
-const ReviewsSection = () => {
-  const reviews = [
-    {
-      userId: "123456",
-      name: "Maria Sphnon",
-      review:
-        "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      score: "4.5",
-      image: bgimage1,
-    },
-    {
-      userId: "123456",
-      name: "Leo Scheffer",
-      review:
-        "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      score: "4.5",
-      image: bgimage2,
-    },
-    {
-      userId: "123456",
-      name: "Livia Rosser",
-      review:
-        "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      score: "4.5",
-      image: bgimage3,
-    },
-    {
-      userId: "123456",
-      name: "Lincoln Rosser",
-      review:
-        "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      score: "4.5",
-      image: bgimage4,
-    },
-  ];
+// ReviewsSection Component (updated with data mapping)
+const ReviewsSection = ({ data }) => {
+  // Map images to match the original structure
+  const imageMap = [bgimage1, bgimage2, bgimage3, bgimage4];
 
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-full md:max-w-[90%] mx-auto space-y-4">
-        {reviews.map((review, index) => (
-          <ReviewCard key={index} {...review} />
+        {data.map((review, index) => (
+          <ReviewCard
+            key={review._id}
+            userName={review.userName} // Replaced userId with userName
+            name={review.userName} // Using userName twice as requested
+            review={review.description} // Mapping description to review
+            score={review.rating.toFixed(1)} // Mapping rating to score (e.g., 5 -> 5.0)
+            image={imageMap[index % imageMap.length]} // Cycle through images
+          />
         ))}
 
         {/* Pagination */}

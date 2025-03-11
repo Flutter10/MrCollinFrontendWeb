@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import bgimage from "../../assets/promote/bgimage.png";
 import arrow from "../../assets/create/arrow.png";
 
-function Eyes() {
+function Eyes({ data }) {
   const sectionRef = useRef(null);
 
   useEffect(() => {
@@ -14,14 +14,14 @@ function Eyes() {
             elements.forEach((el, index) => {
               setTimeout(() => {
                 el.classList.add("slide-in-animation");
-              }, index * 200); // Increased delay between elements
+              }, index * 200);
             });
           }
         });
       },
       {
-        threshold: 0.1, // Reduced threshold for earlier triggering
-        rootMargin: "50px", // Added margin to trigger earlier
+        threshold: 0.1,
+        rootMargin: "50px",
       }
     );
 
@@ -60,21 +60,19 @@ function Eyes() {
         `}
       </style>
       <div className="relative h-[70vh] w-full" ref={sectionRef}>
-        {" "}
-        {/* Added ref here */}
         <img
-          src={bgimage}
+          src={data.image || bgimage} // Using data.image instead of static bgimage
           alt="background"
           className="w-full h-full object-cover"
         />
-        <div className="absolute top-0 left-0 w-full h-full flex flex-col  lg:px-20">
-          <div className="space-y-4  mt-16">
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col lg:px-20">
+          <div className="space-y-4 mt-16">
             <h1 className="text-white font-bold font-['Orbitron']">
-              <p className="lg:text-6xl leading-normal animate-slide ">
-                All eyes on your music
+              <p className="lg:text-6xl leading-normal animate-slide">
+                {data.title} {/* Using data.title instead of static text */}
               </p>
-              <p className="text-white font-['Orbitron'] lg:text-2xl text-sm mb-4 ">
-              Our expert team at Studiosphere 360 is here to craft a promotion campaign that puts your project in the spotlight. We design strategies that blend digital marketing, social media outreach, and targeted publicity to capture the attention of music lovers worldwide. With Studiosphere, your sound gets the audience it deserves—eyes on you and ears on your music.
+              <p className="text-white font-['Orbitron'] lg:text-2xl text-sm mb-4">
+                {data.desc} {/* Using data.desc instead of static text */}
               </p>
             </h1>
             <div className="">

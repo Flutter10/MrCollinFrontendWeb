@@ -6,8 +6,9 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 import backgroundImage from "../../assets/contact/Group.png";
-import { contactUsService } from "../../services/contactUsService";
+
 import SuccessModal from "../SuccessModal";
+import { companyService } from "../../services/companyService";
 
 const Group = () => {
   const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ const Group = () => {
     setError(null);
 
     try {
-      await contactUsService.createInquiry(formData);
+      await companyService.createInquiry(formData);
       setShowSuccess(true);
       // Reset form after successful submission
       setFormData({

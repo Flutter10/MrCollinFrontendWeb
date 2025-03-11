@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import bgimage from "../../assets/privacy/bgimage.png";
 import bgimage1 from "../../assets/privacy/bgimage1.png";
 
-function Policy() {
+function Policy({ title, subTitle, image }) {
   const sectionRef = useRef(null);
 
   useEffect(() => {
@@ -70,26 +70,18 @@ function Policy() {
         <div className="absolute top-0 left-0 w-full h-full flex lg:flex-row flex-col justify-between lg:px-20">
           <div className="space-y-0  mt-4 ">
             <h1 className="text-white font-bold font-['Orbitron']">
-              <p className="lg:text-5xl   lg:mb-32">Our Privacy & Policy</p>
+              <p className="lg:text-5xl   lg:mb-32">{title}</p>
               <p className="text-white font-['Orbitron']  lg:text-xl text-xs  max-w-2xl lg:pt-8 lg:mt-20 ">
-                Studiosphere 360 Privacy & Policy is a robust, transparent
-                framework designed to protect your personal information while
-                ensuring a seamless, secure experience. It lays out exactly how
-                we collect, use, and safeguard your data—no sugar-coating, just
-                clear, practical guidelines. This policy covers everything from
-                basic user details to analytics and usage data, ensuring you're
-                informed and in control. With a forward-thinking approach, it
-                meets industry standards and legal requirements, providing you
-                with the confidence and security you need in the dynamic world
-                of music and entertainment.
+                {subTitle}
+              
               </p>
             </h1>
           </div>
           <div className="flex items-center lg:items-start justify-center">
             <img
-              src={bgimage1}
+              src={image}
               alt="background"
-              className="lg:w-[80%] w-[50%]"
+              className="lg:w-[80%] w-[50% mt-4 rounded-lg"
             />
           </div>
         </div>

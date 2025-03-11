@@ -7,8 +7,14 @@ import i3 from "../../assets/create/i3.png";
 import i4 from "../../assets/create/i4.png";
 import i5 from "../../assets/create/i5.png";
 
-function Create() {
+function Create({ data }) {
   const sectionRef = useRef(null);
+  const defaultData = {
+    title: "Create Now",
+    desc: "Featuring samples from world–class labels:",
+    data: [],
+  };
+  const sectionData = data || defaultData;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -62,59 +68,48 @@ function Create() {
           .slide-in-animation {
             animation: slideIn 0.8s ease-out forwards;
           }
-                        /* Button styles */
-    .create-button {
-      background-color: white;
-      color: black;
-      height: 48px;
-      padding: 0 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 9999px;
-      border: none;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .create-button:hover {
-  background-color: #f9d94c; /* This is the yellow color from your image */
-    }
-    
-    .create-button img {
-      width: 16px;
-      height: 16px;
-      margin-left: 8px;
-      transition: transform 0.5s ease-in-out;
-    }
-    
-    .create-button:hover img {
-      transform: translateX(4px);
-    }
-    @media (max-width: 640px) {
-              .create-button {
-      background-color: white;
-      color: black;
-      height: 34px;
-      padding: 0 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 9999px;
-      border: none;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-              }
+          /* Button styles */
+          .create-button {
+            background-color: white;
+            color: black;
+            height: 48px;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+          
+          .create-button:hover {
+            background-color: #f9d94c; /* Yellow color from your image */
+          }
+          
+          .create-button img {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            transition: transform 0.5s ease-in-out;
+          }
+          
+          .create-button:hover img {
+            transform: translateX(4px);
+          }
+          @media (max-width: 640px) {
+            .create-button {
+              height: 34px;
+              padding: 0 20px;
+              font-size: 14px; /* Slightly smaller font for mobile */
+            }
+          }
         `}
       </style>
       <div
-        className="relative min-h-[70vh] h-auto w-full  lg:px-20 py-8 overflow-y-auto"
+        className="relative min-h-[70vh] h-auto w-full lg:px-20 py-8 overflow-y-auto"
         ref={sectionRef}
       >
         <img
@@ -126,39 +121,38 @@ function Create() {
           <div className="space-y-4">
             <h1 className="text-white font-bold font-['Orbitron']">
               <p className="lg:text-6xl text-2xl leading-normal animate-slide">
-                Create today,share your vision
+                Create today, share your vision
               </p>
               <p className="lg:text-6xl text-2xl leading-normal animate-slide">
                 with the world tomorrow.
               </p>
             </h1>
-            <p className="text-white text-xs lg:text-sm">
-              Unleash your creativity and accelerate your journey from idea to
-              global impact with Studiosphere 360's all-in-one creative
-              ecosystem. This service is designed for visionaries ready to make
-              their mark, offering a streamlined pathway to not only craft your
-              music but also share it with the world—almost instantaneously. •
-              Rapid Creation Tools: Utilize state-of-the-art DAW integration,
-              AI-powered songwriting, and cutting-edge production features to
-              capture your creative spark in real time. • Accelerated Production
-              Pipeline: With services like fast quality online mastering,
-              transform your raw tracks into polished, professional-grade music
-              faster than ever. • Global Collaboration Network: Connect with
-              top-tier songwriters, producers, engineers, and artists, and
-              collaborate seamlessly to refine your sound. • Instant
-              Distribution: Once your masterpiece is ready, share your vision
-              with a global audience the very next day, harnessing integrated
-              sharing tools that bring your art to the world. • One-Stop Shop
-              Perks: As a Studiosphere 360 member, enjoy a comprehensive suite
-              of tools and services that cover every stage of the creative
-              process—from ideation to distribution—empowering you to focus on
-              what truly matters: your art.
-            </p>
+
             <div className="">
               <button className="create-button">
                 <span>Create Now</span>
                 <img src={arrow} alt="arrow" />
               </button>
+            </div>
+
+            <div className="mt-4">
+              <p className="text-white font-['Orbitron'] text-lg mb-4">
+                {sectionData.desc}
+              </p>
+              <div className="flex flex-wrap gap-2 lg:flex-nowrap justify-center md:justify-start">
+                {sectionData.data.map((img, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-center w-full sm:w-auto"
+                  >
+                    <img
+                      src={img.image}
+                      alt={`Label ${index + 1}`}
+                      className="max-w-full h-auto object-contain"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

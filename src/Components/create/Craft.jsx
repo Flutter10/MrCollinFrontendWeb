@@ -1,8 +1,15 @@
 import React from "react";
-import craft from "../../assets/create/craft1.png";
 import arrow from "../../assets/create/arrow.png";
 
-function Craft() {
+function Craft({ data }) {
+  // Fallback data in case props.data is undefined
+  const defaultData = {
+    title: "Craft Your Sound, Share Your Soul.",
+    desc: "Lorem Ipsum is simply dummy text",
+    image: ""
+  };
+  const sectionData = data || defaultData;
+
   return (
     <>
       <style>
@@ -43,7 +50,7 @@ function Craft() {
           }
           
           .create-button:hover {
-            background-color: #f9d94c; /* Dark pink color */
+            background-color: #f9d94c;
             color: black;
           }
           
@@ -68,26 +75,28 @@ function Craft() {
         `}
       </style>
       <div className="relative h-[70vh] w-full">
-        <img src={craft} alt="craft" className="w-full h-full object-cover" />
+        <img
+          src={sectionData.image}
+          alt="craft background"
+          className="w-full h-full object-cover"
+        />
 
         {/* Text Overlay */}
-        <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center lg:px-16 ">
-          <div className="space-y-4 ">
-            <h1 className="text-white font-['Orbitron'] text-6xl ">
+        <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center lg:px-16">
+          <div className="space-y-4">
+            <h1 className="text-white font-['Orbitron'] text-6xl">
               <p className="lg:text-6xl text-4xl">
-                Craft Your
-                <br />
-                Sound, Share
-                <br />
-                Your Soul.
+                {sectionData.title.split(",").map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line.trim()}
+                    {index < sectionData.title.split(",").length - 1 && <br />}
+                  </React.Fragment>
+                ))}
               </p>
             </h1>
 
-            <p className="text-white lg:text-2xl text-sm font-['Orbitron'] ">
-              Craft your sound and share your soul with Studiosphere 360—a
-              unified platform where your musical vision becomes a masterpiece
-              and your authentic expression reaches the world in one seamless
-              journey{" "}
+            <p className="text-white lg:text-2xl text-sm font-['Orbitron']">
+              {sectionData.desc}
             </p>
 
             {/* Try Now Button */}

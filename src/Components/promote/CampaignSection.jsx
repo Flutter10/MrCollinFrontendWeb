@@ -1,16 +1,14 @@
 import React from "react";
-import bgimage from "../../assets/promote/Group.png";
 
-const CampaignSection = () => {
-  const adTypes = [
-    "Feedback Ads",
-    "Story Ads",
-    "Feed Ads",
-    "Playable Ads",
-    "News Feed Ads",
-    "Streaming Ads",
-    "Geo-Targeted Ads",
-  ];
+const CampaignSection = ({ data }) => {
+  console.log("data is", data);
+
+  // Extract ad types (excluding "Make An Impact" which we'll use for button)
+  const adTypes = data?.data?.filter(item => item.title !== "Make An Impact")
+    .map(item => item.title);
+
+  // Get button text
+  const buttonText = data?.data?.find(item => item.title === "Make An Impact")?.title || "Make An Impact";
 
   return (
     <div className="min-h-screen flex items-center p-8">
@@ -18,13 +16,13 @@ const CampaignSection = () => {
         {/* Image placeholder with custom shape */}
         <div className="w-full md:w-1/2 relative">
           <div className="relative ">
-            <img src={bgimage} alt="Campaign" className="w-full h-full " />
+            <img src={data.image} alt="Campaign" className="w-full h-full " />
           </div>
         </div>
 
         {/* Content section */}
         <div className="w-full md:w-1/2 space-y-6">
-          <h1 className="text-4xl md:text-5xl font-bold  font-['Orbitron']">
+          <h1 className="text-4xl md:text-5xl font-bold font-['Orbitron']">
             <p className="text-yellow-400">
               A custom campaign that hits all targets
             </p>
@@ -52,7 +50,7 @@ const CampaignSection = () => {
             className="mt-8 px-8 py-3 bg-white text-black rounded-full font-bold transition-colors font-['Orbitron']"
             style={{ borderRadius: "9999px" }}
           >
-            Make An Impact
+            {buttonText}
           </button>
         </div>
       </div>

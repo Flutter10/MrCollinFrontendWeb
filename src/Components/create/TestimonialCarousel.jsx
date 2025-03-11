@@ -1,88 +1,11 @@
+
+
 import React from "react";
-import pic1 from "../../assets/create/pic1.png";
-import pic2 from "../../assets/create/pic2.png";
-import pic3 from "../../assets/create/pic3.png";
-import pic4 from "../../assets/create/pic4.png";
-import pic5 from "../../assets/create/pic5.png";
-import pic6 from "../../assets/create/pic6.png";
-import pic7 from "../../assets/create/pic7.png";
 
-const TestimonialCarousel = () => {
-  const upperCards = [
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Justin_Korsgaard",
-      avatar: pic1,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Zaire_Curtis",
-      avatar: pic2,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Maren_Dokidis",
-      avatar: pic3,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Marcus_Stanton",
-      avatar: pic4,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Aspen_Lubin",
-      avatar: pic5,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Zaire_Levin",
-      avatar: pic6,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Jordyn_Passaquindici_Arcand",
-      avatar: pic7,
-    },
-  ];
-
-  const lowerCards = [
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Justin_Korsgaard",
-      avatar: pic1,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Zaire_Curtis",
-      avatar: pic2,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Maren_Dokidis",
-      avatar: pic3,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Marcus_Stanton",
-      avatar: pic4,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Aspen_Lubin",
-      avatar: pic5,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Zaire_Levin",
-      avatar: pic6,
-    },
-    {
-      text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-      author: "@Jordyn_Passaquindici_Arcand",
-      avatar: pic7,
-    },
-  ];
+const TestimonialCarousel = ({ data }) => {
+  
+  // Extract the testimonials from the data prop
+  const testimonials = data?.data || [];
 
   return (
     <div className="bg-black py-16 overflow-hidden">
@@ -92,11 +15,11 @@ const TestimonialCarousel = () => {
 
         @keyframes scrollLeft {
           0% { transform: translateX(0); }
-          100% { transform: translateX(calc(-350px * 7 - 1.5rem * 7))} /* Accounts for card width and gap */
+          100% { transform: translateX(calc(-350px * ${testimonials.length} - 1.5rem * ${testimonials.length}))}
         }
 
         @keyframes scrollRight {
-          0% { transform: translateX(calc(-350px * 7 - 1.5rem * 7))}
+          0% { transform: translateX(calc(-350px * ${testimonials.length} - 1.5rem * ${testimonials.length}))}
           100% { transform: translateX(0); }
         }
 
@@ -123,38 +46,38 @@ const TestimonialCarousel = () => {
       <div className="mb-8 relative overflow-hidden">
         <div className="flex gap-6 scroll-left quicksand">
           {/* Original cards */}
-          {upperCards.map((card, index) => (
+          {testimonials.map((card, index) => (
             <div
               key={`original-${index}`}
               className="card p-8 pt-4 overflow-hidden bg-gradient-to-r from-[#505A66] via-[#435561] to-[#292B3A]"
               style={{ borderRadius: "24px" }}
             >
-              <p className="text-white text-lg mb-6">{card.text}</p>
+              <p className="text-white text-lg mb-6">{card.desc}</p>
               <div className="flex items-center gap-3">
                 <img
-                  src={card.avatar}
-                  alt={card.author}
+                  src={card.image}
+                  alt={card.title}
                   className="w-10 h-10 rounded-full"
                 />
-                <span className="text-gray-400">{card.author}</span>
+                <span className="text-gray-400">{card.title}</span>
               </div>
             </div>
           ))}
           {/* Duplicated cards for seamless loop */}
-          {upperCards.map((card, index) => (
+          {testimonials.map((card, index) => (
             <div
               key={`duplicate-${index}`}
               className="card p-8 pt-4 overflow-hidden bg-gradient-to-r from-[#505A66] via-[#435561] to-[#292B3A]"
               style={{ borderRadius: "24px" }}
             >
-              <p className="text-white text-lg mb-6">{card.text}</p>
+              <p className="text-white text-lg mb-6">{card.desc}</p>
               <div className="flex items-center gap-3">
                 <img
-                  src={card.avatar}
-                  alt={card.author}
+                  src={card.image}
+                  alt={card.title}
                   className="w-10 h-10 rounded-full"
                 />
-                <span className="text-gray-400">{card.author}</span>
+                <span className="text-gray-400">{card.title}</span>
               </div>
             </div>
           ))}
@@ -165,38 +88,38 @@ const TestimonialCarousel = () => {
       <div className="relative overflow-hidden">
         <div className="flex gap-6 scroll-right quicksand">
           {/* Original cards */}
-          {lowerCards.map((card, index) => (
+          {testimonials.map((card, index) => (
             <div
               key={`original-${index}`}
               className="card p-8 pt-4 overflow-hidden bg-gradient-to-r from-[#505A66] via-[#435561] to-[#292B3A]"
               style={{ borderRadius: "24px" }}
             >
-              <p className="text-white text-lg mb-6">{card.text}</p>
+              <p className="text-white text-lg mb-6">{card.desc}</p>
               <div className="flex items-center gap-3">
                 <img
-                  src={card.avatar}
-                  alt={card.author}
+                  src={card.image}
+                  alt={card.title}
                   className="w-10 h-10 rounded-full"
                 />
-                <span className="text-gray-400">{card.author}</span>
+                <span className="text-gray-400">{card.title}</span>
               </div>
             </div>
           ))}
           {/* Duplicated cards for seamless loop */}
-          {lowerCards.map((card, index) => (
+          {testimonials.map((card, index) => (
             <div
               key={`duplicate-${index}`}
               className="card p-8 pt-4 overflow-hidden bg-gradient-to-r from-[#505A66] via-[#435561] to-[#292B3A]"
               style={{ borderRadius: "24px" }}
             >
-              <p className="text-white text-lg mb-6">{card.text}</p>
+              <p className="text-white text-lg mb-6">{card.desc}</p>
               <div className="flex items-center gap-3">
                 <img
-                  src={card.avatar}
-                  alt={card.author}
+                  src={card.image}
+                  alt={card.title}
                   className="w-10 h-10 rounded-full"
                 />
-                <span className="text-gray-400">{card.author}</span>
+                <span className="text-gray-400">{card.title}</span>
               </div>
             </div>
           ))}
@@ -207,3 +130,5 @@ const TestimonialCarousel = () => {
 };
 
 export default TestimonialCarousel;
+
+
